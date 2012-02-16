@@ -21,12 +21,13 @@ Rationale and Goals
 ===================
 
 Python 3 is a major new revision of the language, and it was decided very
-early on that breaking backwards compatibility was part of the design. The migration from a Python 2.x to a Python 3 is to be accomplished with the aid of a separate translation tool that converts
-the Python 2.x sourcecode to Python 3 syntax.  With more and more libraries
-supporting Python 3, however, it has become clear that 2to3 as a tool is
-insufficient, and people are now attempting to find ways to make the same
-source work in both Python 2.x and Python 3.x, with varying levels of
-success.
+early on that breaking backwards compatibility was part of the design. The
+migration from a Python 2.x to a Python 3 is to be accomplished with the
+aid of a separate translation tool that converts the Python 2.x sourcecode
+to Python 3 syntax.  With more and more libraries supporting Python 3,
+however, it has become clear that 2to3 as a tool is insufficient, and
+people are now attempting to find ways to make the same source work in both
+Python 2.x and Python 3.x, with varying levels of success.
 
 Python 2.6 and Python 2.7 support syntax features from Python 3
 which for the most part make a unified code base possible.  Many thought
@@ -50,19 +51,23 @@ available and has to be incorrectly labeled as bytestring.  If such a
 codebase is then used in Python 3, the interpreter will start using
 byte objects in places where they are no longer accepted (such as
 identifiers).  This can be solved by a module that detects 2.x and 3.x and
-provides wrapper functions that transcode literals at runtime.  Unfortunately, this has the side effect of slowing down the runtime performance
-of Python and makes for less beautiful code.  Considering that Python 2
-and Python 3 support for most libraries will have to continue side by side for several more years to come, this means that such modules lose one of Python's key properties: easily readable and understandable code.
+provides wrapper functions that transcode literals at runtime.
+Unfortunately, this has the side effect of slowing down the runtime
+performance of Python and makes for less beautiful code.  Considering
+that Python 2 and Python 3 support for most libraries will have to
+continue side by side for several more years to come, this means that
+such modules lose one of Python's key properties: easily readable and
+understandable code.
 
-Additionally, the vast majority of people who maintain Python 2.x codebases are more familiar with Python 2.x
-semantics, and a per-file difference in
-literal meanings will be very annoying for them in the long run.  A quick poll on
-Twitter about the use of the division future import supported my
-suspicions that people opt out of behaviour-changing future imports because
-they are a maintenance burden.  Every time you review code you have to
-check the top of the file to see if the behaviour was changed.  Obviously
-that was an unscientific informal poll, but it might be something worth
-considering.
+Additionally, the vast majority of people who maintain Python 2.x 
+codebases are more familiar with Python 2.x semantics, and a per-file
+difference in literal meanings will be very annoying for them in the
+long run.  A quick poll on Twitter about the use of the division future
+import supported my suspicions that people opt out of behaviour-changing
+future imports because they are a maintenance burden.  Every time you
+review code you have to check the top of the file to see if the
+behaviour was changed.  Obviously that was an unscientific informal
+poll, but it might be something worth considering.
 
 Proposed Solution
 =================
@@ -117,7 +122,8 @@ native string, users can avoid having to adjust for that.
 Problems with 2to3
 ==================
 
-In practice 2to3 currently suffers from a few problems which make it unnecessarily difficult and/or unpleasant to use:
+In practice 2to3 currently suffers from a few problems which make it
+unnecessarily difficult and/or unpleasant to use:
 
 -   Bad overall performance.  In many cases 2to3 runs one or two orders of
     magnitude slower than the testsuite for the library or application
@@ -127,7 +133,9 @@ In practice 2to3 currently suffers from a few problems which make it unnecessari
 -   Line numbers from error messages do not match up with the real source
     lines due to added/rewritten imports.
 -   extending 2to3 with custom fixers is nontrivial without using
-    distribute.  By default 2to3 works acceptably well for upgrading byte-based APIs to unicode based APIs but it fails to upgrade APIs which already support unicode to Python 3::
+    distribute.  By default 2to3 works acceptably well for upgrading
+    byte-based APIs to unicode based APIs but it fails to upgrade APIs
+    which already support unicode to Python 3::
 
         --- test.py (original)
         +++ test.py (refactored)
