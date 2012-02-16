@@ -58,6 +58,16 @@ and Python 3 support for most libraries will have to be supported for a
 few years to come this means that such modules lose one of Python's nice
 properties which is that the code is easy to read and understand.
 
+Additionally the vast majority of people are more familiar with Python 2.x
+semantics that maintain Python 2.x code and there a per-file difference in
+literal meanings can be very annoying on the long run.  A quick poll on
+Twitter about the use of the division future import supported my
+suspicions that people opt out of behavior changing future imports because
+they are a maintenance burden.  Every time you review a code you have to
+check the top of the file to see if the behavior was changed.  Obviously
+that was an unscientific informal poll but it might be something worth
+considering.
+
 Proposed Solution
 =================
 
@@ -173,6 +183,18 @@ ugly if such a string literal is used in a tight loop.
 This proposal would fix this.  The modernize module could easily be
 adjusted to just not translate unicode strings at all and the runtime
 overhead would disappear.
+
+Possible Downsides
+==================
+
+The obvious downside for this is that potential Python 3 users would have
+to be aware of the fact that ``u`` is an optional prefix for strings.
+This is something that Python 3 in general tried to avoid.  The second
+inequality comparison operator was removed, the ``L`` prefix for long
+integers etc.  This PEP would propose a slight revert on that practice be
+reintroducing redundant syntax.  On the other hand Python already has
+multiple literals for strings with mostly the same behavior (single
+quoted, double quoted, single triple quoted, double triple quoted).
 
 References
 ==========
