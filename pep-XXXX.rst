@@ -22,8 +22,8 @@ Rationale and Goals
 
 Python 3 is a major new revision of the language, and it was decided very
 early on that breaking backwards compatibility was part of the design. The
-migration from a Python 2.x to a Python 3 is to be accomplished with the
-aid of a separate translation tool that converts the Python 2.x sourcecode
+migration from a Python 2.x to a Python 3 codebase is to be accomplished with
+the aid of a separate translation tool that converts the Python 2.x sourcecode
 to Python 3 syntax.  With more and more libraries supporting Python 3,
 however, it has become clear that 2to3 as a tool is insufficient, and
 people are now attempting to find ways to make the same source work in both
@@ -59,7 +59,7 @@ continue side by side for several more years to come, this means that
 such modules lose one of Python's key properties: easily readable and
 understandable code.
 
-Additionally, the vast majority of people who maintain Python 2.x 
+Additionally, the vast majority of people who maintain Python 2.x
 codebases are more familiar with Python 2.x semantics, and a per-file
 difference in literal meanings will be very annoying for them in the
 long run.  A quick poll on Twitter about the use of the division future
@@ -172,12 +172,12 @@ Modernizing Code
 
 The 2to3 tool can be easily adjusted to generate code that runs on both
 Python 2 and Python 3.  An experimental extension to 2to3
-which only modernizes Python code to the extent that it runs on Python 2.7 or later
-with support for the ``six`` library is available as python-modernize [1]_.
-For most cases the runtime impact of ``six`` can be neglected (like a
-function that calls ``iteritems()`` on a passed dictionary under 2.x or
-``items()`` under 3.x), but to make strings cheap for both 2.x and 3.x it is
-nearly impossible.  The way it currently works is by abusing the
+which only modernizes Python code to the extent that it runs on Python 2.7 or
+later with support for the ``six`` library is available as
+python-modernize [1]_. For most cases the runtime impact of ``six`` can be 
+neglected (like a function that calls ``iteritems()`` on a passed dictionary
+under 2.x or ``items()`` under 3.x), but to make strings cheap for both 2.x
+and 3.x it is nearly impossible.  The way it currently works is by abusing the
 ``unicode-escape`` codec on Python 2.x native strings.  This is especially
 ugly if such a string literal is used in a tight loop.
 
