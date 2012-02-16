@@ -12,9 +12,9 @@ Abstract
 ========
 
 This document proposes the reintegration of an explicit unicode literal
-from Python 2.x to the Python 3.x language specification, in order to enable
-side-by-side support of libraries for both Python 2 and Python 3 without
-the need for an explicit 2to3 run.
+from Python 2.x to the Python 3.x language specification, in order to
+enable side-by-side support of libraries for both Python 2 and Python 3
+without the need for an explicit 2to3 run.
 
 
 Rationale and Goals
@@ -22,17 +22,18 @@ Rationale and Goals
 
 Python 3 is a major new revision of the language, and it was decided very
 early on that breaking backwards compatibility was part of the design. The
-migration from a Python 2.x to a Python 3 codebase is to be accomplished with
-the aid of a separate translation tool that converts the Python 2.x sourcecode
-to Python 3 syntax.  With more and more libraries supporting Python 3,
-however, it has become clear that 2to3 as a tool is insufficient, and
-people are now attempting to find ways to make the same source work in both
-Python 2.x and Python 3.x, with varying levels of success.
+migration from a Python 2.x to a Python 3 codebase is to be accomplished
+with the aid of a separate translation tool that converts the Python 2.x
+sourcecode to Python 3 syntax.  With more and more libraries supporting
+Python 3, however, it has become clear that 2to3 as a tool is
+insufficient, and people are now attempting to find ways to make the same
+source work in both Python 2.x and Python 3.x, with varying levels of
+success.
 
-Python 2.6 and Python 2.7 support syntax features from Python 3
-which for the most part make a unified code base possible.  Many thought
-that the ``unicode_literals`` future import might make a common source
-possible, but it turns out that it's doing more harm than good.
+Python 2.6 and Python 2.7 support syntax features from Python 3 which for
+the most part make a unified code base possible.  Many thought that the
+``unicode_literals`` future import might make a common source possible,
+but it turns out that it's doing more harm than good.
 
 With the design of the updated WSGI specification a few new terms for
 strings were loosely defined: unicode strings, byte strings and native
@@ -48,26 +49,25 @@ future imports ``b'foo'`` means bytestring, ``u'foo'`` declares a unicode
 string and ``'foo'`` a native string which in Python 2.x means bytes.
 With the ``unicode_literals`` import the native string type is no longer
 available and has to be incorrectly labeled as bytestring.  If such a
-codebase is then used in Python 3, the interpreter will start using
-byte objects in places where they are no longer accepted (such as
-identifiers).  This can be solved by a module that detects 2.x and 3.x and
-provides wrapper functions that transcode literals at runtime.
-Unfortunately, this has the side effect of slowing down the runtime
-performance of Python and makes for less beautiful code.  Considering
-that Python 2 and Python 3 support for most libraries will have to
-continue side by side for several more years to come, this means that
-such modules lose one of Python's key properties: easily readable and
-understandable code.
+codebase is then used in Python 3, the interpreter will start using byte
+objects in places where they are no longer accepted (such as identifiers).
+This can be solved by a module that detects 2.x and 3.x and provides
+wrapper functions that transcode literals at runtime.  Unfortunately, this
+has the side effect of slowing down the runtime performance of Python and
+makes for less beautiful code.  Considering that Python 2 and Python 3
+support for most libraries will have to continue side by side for several
+more years to come, this means that such modules lose one of Python's key
+properties: easily readable and understandable code.
 
 Additionally, the vast majority of people who maintain Python 2.x
 codebases are more familiar with Python 2.x semantics, and a per-file
-difference in literal meanings will be very annoying for them in the
-long run.  A quick poll on Twitter about the use of the division future
-import supported my suspicions that people opt out of behaviour-changing
-future imports because they are a maintenance burden.  Every time you
-review code you have to check the top of the file to see if the
-behaviour was changed.  Obviously that was an unscientific informal
-poll, but it might be something worth considering.
+difference in literal meanings will be very annoying for them in the long
+run.  A quick poll on Twitter about the use of the division future import
+supported my suspicions that people opt out of behaviour-changing future
+imports because they are a maintenance burden.  Every time you review code
+you have to check the top of the file to see if the behaviour was changed.
+Obviously that was an unscientific informal poll, but it might be
+something worth considering.
 
 Proposed Solution
 =================
@@ -75,19 +75,19 @@ Proposed Solution
 The idea is to support (with Python 3.3) an explicit ``u`` and ``U``
 prefix for native strings in addition to the prefix-less variants.  These
 would stick around for the entirety of the Python 3 lifetime but might at
-some point yield deprecation warnings if deemed appropriate.  This could be 
-something for pyflakes or other similar libraries to support.
+some point yield deprecation warnings if deemed appropriate.  This could
+be something for pyflakes or other similar libraries to support.
 
 Python 3.2 and earlier
 ======================
 
 An argument against this proposal was made on the Python-Dev mailinglist,
 mentioning that Ubuntu LTS will ship Python 3.2 and 2.7 for only 5 years.
-The counterargument is that Python 2.7 is
-currently the Python version of choice for users who want LTS support.
-As it stands, Python 3 is currently a bad choice for long-term investments,
-since the ecosystem is not yet properly developed, and libraries are still
-fighting with their API decisions for Python 3.
+The counterargument is that Python 2.7 is currently the Python version of
+choice for users who want LTS support.  As it stands, Python 3 is
+currently a bad choice for long-term investments, since the ecosystem is
+not yet properly developed, and libraries are still fighting with their
+API decisions for Python 3.
 
 A valid point is that this would encourage people to become dependent on
 Python 3.3 for their ports.  Fortunately that is not a big problem since
@@ -105,8 +105,8 @@ There are a couple of places where decisions have to be made for or
 against unicode support almost arbitrarily.  This is mostly the case for
 protocols that do not support unicode all the way down, or hide it behind
 transport encodings that might or might not be unicode themselves.  HTTP,
-Email and WSGI are good examples of that.  For certain ambiguous cases
-it would be possible to apply the same logic for unicode that Python 3
+Email and WSGI are good examples of that.  For certain ambiguous cases it
+would be possible to apply the same logic for unicode that Python 3
 applies to the Python 2 versions of the library as well but, if those
 details were exposed to the user of the API, it would mean breaking
 compatibility for existing users of the Python 2 API which is a no-go for
@@ -116,8 +116,8 @@ to port such libraries over.
 
 Not only the libraries but also the users of these APIs would benefit from
 that.  For instance, the urllib module in Python 2 is using byte strings,
-and the one in Python 3 is using unicode strings.  By leveraging a
-native string, users can avoid having to adjust for that.
+and the one in Python 3 is using unicode strings.  By leveraging a native
+string, users can avoid having to adjust for that.
 
 Problems with 2to3
 ==================
@@ -153,8 +153,8 @@ APIs and Concepts Using Native Strings
 ======================================
 
 The following is an incomplete list of APIs and general concepts that use
-native strings and need implicit upgrading to unicode in Python 3, and which
-would directly benefit from this support:
+native strings and need implicit upgrading to unicode in Python 3, and
+which would directly benefit from this support:
 
 -   Python identifiers (dict keys, class names, module names, import
     paths)
@@ -171,19 +171,19 @@ Modernizing Code
 ================
 
 The 2to3 tool can be easily adjusted to generate code that runs on both
-Python 2 and Python 3.  An experimental extension to 2to3
-which only modernizes Python code to the extent that it runs on Python 2.7 or
-later with support for the ``six`` library is available as
-python-modernize [1]_. For most cases the runtime impact of ``six`` can be 
-neglected (like a function that calls ``iteritems()`` on a passed dictionary
-under 2.x or ``items()`` under 3.x), but to make strings cheap for both 2.x
-and 3.x it is nearly impossible.  The way it currently works is by abusing the
+Python 2 and Python 3.  An experimental extension to 2to3 which only
+modernizes Python code to the extent that it runs on Python 2.7 or later
+with support for the ``six`` library is available as python-modernize
+[1]_. For most cases the runtime impact of ``six`` can be neglected (like
+a function that calls ``iteritems()`` on a passed dictionary under 2.x or
+``items()`` under 3.x), but to make strings cheap for both 2.x and 3.x it
+is nearly impossible.  The way it currently works is by abusing the
 ``unicode-escape`` codec on Python 2.x native strings.  This is especially
 ugly if such a string literal is used in a tight loop.
 
 This proposal would fix this.  The modernize module could easily be
-adjusted to simply not translate unicode strings, and the runtime
-overhead would disappear.
+adjusted to simply not translate unicode strings, and the runtime overhead
+would disappear.
 
 Possible Downsides
 ==================
