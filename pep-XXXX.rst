@@ -138,6 +138,24 @@ harder than necessary:
         +        return str(self).encode('utf-8')
 
 
+APIs and Concepts Using Native Strings
+======================================
+
+The following is an incomplete list of APIs and general concepts that use
+native strings and need implicit upgrading to unicode in Python 3 which
+would directly benefit from this support:
+
+-   Python identifiers (dict keys, class names, module names, import
+    paths)
+-   URLs for the most part as well as HTTP headers in urllib/http servers
+-   WSGI environment keys and CGI-inherited values
+-   Python source code for dynamic compilation and AST hacks
+-   Exception messages
+-   ``__repr__`` return value
+-   preferred filesystem paths
+-   preferred OS environment
+
+
 Modernizing Code
 ================
 
