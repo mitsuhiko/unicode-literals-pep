@@ -108,6 +108,36 @@ that.  For instance, the urllib module in Python 2 is using byte strings,
 and the one in Python 3 is using unicode strings.  By leveraging a
 native string, users can avoid having to adjust for that.
 
+Problems with 2to3
+==================
+
+In practice 2to3 currently suffers from a few problems that make the usage
+harder than necessary:
+
+-   Bad overall performance.  In many cases 2to3 runs one or two orders of
+    magnitude slower than the testsuite for the library or application
+    it's testing.
+-   Slightly different behavior in 2to3 between different versions of
+    Python cause different outcome when paired with custom fixers.
+-   Line numbers from error messages do not match up with the real source
+    lines due to added/rewritten imports.
+-   extending 2to3 with custom fixers is nontrivial without using
+    distribute.  By default 2to3 works okay for upgrading byte based APIs
+    to unicode based APIs but it fails to upgrade already unicode
+    supporting APIs to Python 3::
+
+        --- test.py (original)
+        +++ test.py (refactored)
+        @@ -1,5 +1,5 @@
+         class Foo(object):
+             def __unicode__(self):
+        -        return u'test'
+        +        return 'test'
+             def __str__(self):
+        -        return unicode(self).encode('utf-8')
+        +        return str(self).encode('utf-8')
+
+
 Modernizing Code
 ================
 
