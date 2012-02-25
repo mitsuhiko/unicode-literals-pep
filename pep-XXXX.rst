@@ -197,6 +197,40 @@ reintroducing redundant syntax.  On the other hand, Python already has
 multiple literals for strings with mostly the same behavior (single
 quoted, double quoted, single triple quoted, double triple quoted).
 
+Runtime Overhead of Wrappers
+============================
+
+I did some basic timings on the performance of a ``u()`` wrapper function
+as used by the `six` library.  The implementation of ``u()`` is as
+follows::
+
+    if sys.version_info >= (3, 0):
+        def u(value):
+            return value
+    else:
+        def u(value):
+            return unicode(value, 'unicode-escape')
+
+The intention is that ``u'foo'`` can be turned to ``u('foo')`` and that on
+Python 2.x an implicit decoding happens.  In this case the wrapper will
+have a decoding overhead for Python 2.x.  I did some basic timings to see
+how bad the performance loss would be.  The following examples measure the
+execution time over 10000 iterations::
+
+    u'\N{SNOWMAN}barbaz'            1000 loops, best of 3: 295 usec per loop
+    u('\N{SNOWMAN}barbaz')          10 loops, best of 3: 18.5 msec per loop
+    u'foobarbaz_%d' % x             100 loops, best of 3: 8.32 msec per loop
+    u('foobarbaz_%d') % x           10 loops, best of 3: 25.6 msec per loop
+    u'fööbarbaz'                    1000 loops, best of 3: 289 usec per loop
+    u('fööbarbaz')                  100 loops, best of 3: 15.1 msec per loop
+    u'foobarbaz'                    1000 loops, best of 3: 294 usec per loop
+    u('foobarbaz')                  100 loops, best of 3: 14.3 msec per loop
+
+The overhead of the wrapper function in Python 3 is the price of a
+function call since the function only has to return the argument
+unchanged.
+
+
 References
 ==========
 
